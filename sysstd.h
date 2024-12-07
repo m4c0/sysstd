@@ -3,7 +3,7 @@
 
 #ifndef SYSSTD_IMPLEMENTATION
 
-int sys_mkdir(const char * path);
+int sysstd_mkdir(const char * path);
 
 #else // SYSSTD_IMPLEMENTATION
 
@@ -14,7 +14,7 @@ int sys_mkdir(const char * path);
 #define _mkdir(x) mkdir((x), 0777)
 #endif
  
-int sys_mkdir(const char * path) {
+int sysstd_mkdir(const char * path) {
   return _mkdir(path);
 }
 
