@@ -3,12 +3,16 @@
 
 #include <stdio.h>
 
-#ifndef SYSSTD_IMPLEMENTATION
+#if _WIN32
+#define SYSSTD_FILE_SEP "\\"
+#else
+#define SYSSTD_FILE_SEP "/"
+#endif
 
 FILE * sysstd_fopen(const char * name, const char * mode);
 int    sysstd_mkdir(const char * path);
 
-#else // SYSSTD_IMPLEMENTATION
+#ifndef SYSSTD_IMPLEMENTATION
 
 #ifdef _WIN32
 #include <direct.h>
