@@ -12,7 +12,7 @@
 FILE * sysstd_fopen(const char * name, const char * mode);
 int    sysstd_mkdir(const char * path);
 
-#ifndef SYSSTD_IMPLEMENTATION
+#ifdef SYSSTD_IMPLEMENTATION
 
 #ifdef _WIN32
 #include <direct.h>
