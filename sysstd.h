@@ -9,16 +9,16 @@
 #define SYSSTD_FILE_SEP "/"
 #endif
 
-const char * sysstd_env(const char * name);
-FILE *       sysstd_fopen(const char * name, const char * mode);
-int          sysstd_mkdir(const char * path);
+char * sysstd_env(const char * name);
+FILE * sysstd_fopen(const char * name, const char * mode);
+int    sysstd_mkdir(const char * path);
 
 #ifdef SYSSTD_IMPLEMENTATION
 
 #ifdef _WIN32
 #include <direct.h>
 
-const char * sysstd_env(const char * name) {
+char * sysstd_env(const char * name) {
   char *buf;
   size_t sz;
   return (0 == _dupenv_s(&buf, &sz, name)) ? buf : NULL;
@@ -36,7 +36,7 @@ int sysstd_mkdir(const char * path) {
 #include <string.h>
 #include <sys/stat.h>
 
-const char * sysstd_env(const char * name) {
+char * sysstd_env(const char * name) {
   const char * e = getenv(name);
   return e ? strdup(e) : NULL;
 }
