@@ -9,6 +9,7 @@
 #define SYSSTD_FILE_SEP "/"
 #endif
 
+int    sysstd_chdir(const char * path);
 char * sysstd_env(const char * name);
 FILE * sysstd_fopen(const char * name, const char * mode);
 int    sysstd_mkdir(const char * path);
@@ -18,6 +19,7 @@ int    sysstd_mkdir(const char * path);
 #ifdef _WIN32
 #include <direct.h>
 
+int sysstd_chdir(const char * path) { return _chdir(path); }
 char * sysstd_env(const char * name) {
   char *buf;
   size_t sz;
@@ -27,15 +29,15 @@ FILE * sysstd_fopen(const char * name, const char * mode) {
   FILE * res;
   return (0 == fopen_s(&res, name, mode)) ? res : NULL;
 }
-int sysstd_mkdir(const char * path) {
-  return _mkdir(path);
-}
+int sysstd_mkdir(const char * path) { return _mkdir(path); }
 
 #else // !_WIN32
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
+int sysstd_chdir(const char * path) { return chdir(path); }
 char * sysstd_env(const char * name) {
   const char * e = getenv(name);
   return e ? strdup(e) : NULL;
