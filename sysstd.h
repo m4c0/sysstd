@@ -18,6 +18,7 @@ int    sysstd_mkdir(const char * path);
 
 #ifdef _WIN32
 #include <direct.h>
+#include <stdlib.h>
 
 int sysstd_chdir(const char * path) { return _chdir(path); }
 char * sysstd_env(const char * name) {
