@@ -15,6 +15,7 @@ char *      sysstd_env(const char * name);
 FILE *      sysstd_fopen(const char * name, const char * mode);
 struct tm * sysstd_gmtime(const time_t * t);
 int         sysstd_mkdir(const char * path);
+int         sysstd_remove(const char * path);
 char *      sysstd_strdup(const char * str);
 
 #ifdef SYSSTD_IMPLEMENTATION
@@ -39,6 +40,7 @@ struct tm * sysstd_gmtime(const time_t * t) {
   return (0 == gmtime_s(&tm, t)) ? &tm : NULL;
 }
 int sysstd_mkdir(const char * path) { return _mkdir(path); }
+int sysstd_remove(const char * path) { return _remove(path); }
 char * sysstd_strdup(const char * str) { return _strdup(str); }
 
 #else // !_WIN32
@@ -55,6 +57,7 @@ char * sysstd_env(const char * name) {
 FILE * sysstd_fopen(const char * name, const char * mode) { return fopen(name, mode); }
 struct tm * sysstd_gmtime(const time_t * t) { return gmtime(t); }
 int sysstd_mkdir(const char * path) { return mkdir(path, 0777); }
+int sysstd_remove(const char * path) { return remove(path); }
 char * sysstd_strdup(const char * str) { return strdup(str); }
 
 #endif
