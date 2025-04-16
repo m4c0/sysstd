@@ -22,9 +22,11 @@ char *      sysstd_strdup(const char * str);
 #ifdef SYSSTD_IMPLEMENTATION
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
 #include <direct.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 int sysstd_chdir(const char * path) { return _chdir(path); }
 char * sysstd_env(const char * name) {
@@ -41,7 +43,10 @@ struct tm * sysstd_gmtime(const time_t * t) {
   return (0 == gmtime_s(&tm, t)) ? &tm : NULL;
 }
 int sysstd_mkdir(const char * path) { return _mkdir(path); }
-int sysstd_remove(const char * path) { return _remove(path); }
+int sysstd_remove(const char * path) { return remove(path); }
+void sysstd_setenv(const char * name, const char * value) {
+  SetEnvironmentVariable(name, value);
+}
 char * sysstd_strdup(const char * str) { return _strdup(str); }
 
 #else // !_WIN32
