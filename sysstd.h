@@ -17,6 +17,7 @@ struct tm * sysstd_gmtime(const time_t * t);
 int         sysstd_mkdir(const char * path);
 int         sysstd_remove(const char * path);
 void        sysstd_setenv(const char * name, const char * value);
+int         sysstd_spawn(const char * cmd, const char * const * argv);
 char *      sysstd_strdup(const char * str);
 
 #ifdef SYSSTD_IMPLEMENTATION
@@ -24,6 +25,7 @@ char *      sysstd_strdup(const char * str);
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <direct.h>
+#include <process.h>
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
@@ -47,6 +49,7 @@ int sysstd_remove(const char * path) { return remove(path); }
 void sysstd_setenv(const char * name, const char * value) {
   SetEnvironmentVariable(name, value);
 }
+int sysstd_spawn(const char * cmd, const char * const * argv) { return _spawnv(_P_WAIT, cmd, argv); }
 char * sysstd_strdup(const char * str) { return _strdup(str); }
 
 #else // !_WIN32
@@ -65,6 +68,12 @@ struct tm * sysstd_gmtime(const time_t * t) { return gmtime(t); }
 int sysstd_mkdir(const char * path) { return mkdir(path, 0777); }
 int sysstd_remove(const char * path) { return remove(path); }
 void sysstd_setenv(const char * name, const char * value) { setenv(name, value, 0); }
+int sysstd_spawn(const char * cmd, const char * const * argv) {
+  pid_t pid = fork();
+  if (pid < 0) return pid;
+  if (pid == 0) execv(cmd, argv);
+  else return waitpid(pid);
+}
 char * sysstd_strdup(const char * str) { return strdup(str); }
 
 #endif
