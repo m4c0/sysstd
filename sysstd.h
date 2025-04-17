@@ -71,8 +71,14 @@ void sysstd_setenv(const char * name, const char * value) { setenv(name, value, 
 int sysstd_spawn(const char * cmd, const char * const * argv) {
   pid_t pid = fork();
   if (pid < 0) return pid;
-  if (pid == 0) execv(cmd, argv);
-  else return waitpid(pid);
+  if (pid == 0) {
+    execv(cmd, (char * const *)argv);
+    return 1;
+  } else {
+    int res;
+    waitpid(pid, &res, 0);
+    return res;
+  }
 }
 char * sysstd_strdup(const char * str) { return strdup(str); }
 
