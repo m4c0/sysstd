@@ -73,7 +73,7 @@ int sysstd_spawn(const char * cmd, const char * const * argv) {
   if (pid < 0) return pid;
   if (pid == 0) {
     execv(cmd, (char * const *)argv);
-    return 1;
+    exit(1);
   } else {
     int res;
     waitpid(pid, &res, 0);
