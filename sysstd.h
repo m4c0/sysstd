@@ -77,7 +77,8 @@ int sysstd_spawn(const char * cmd, const char * const * argv) {
   } else {
     int res;
     waitpid(pid, &res, 0);
-    return res;
+    if (WIFEXITED(res)) return WEXITSTATUS(res);
+    return 13;
   }
 }
 char * sysstd_strdup(const char * str) { return strdup(str); }
