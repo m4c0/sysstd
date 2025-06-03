@@ -49,7 +49,7 @@ int sysstd_remove(const char * path) { return remove(path); }
 void sysstd_setenv(const char * name, const char * value) {
   SetEnvironmentVariable(name, value);
 }
-int sysstd_spawn(const char * cmd, const char * const * argv) { return _spawnv(_P_WAIT, cmd, argv); }
+int sysstd_spawn(const char * cmd, const char * const * argv) { return _spawnvp(_P_WAIT, cmd, argv); }
 char * sysstd_strdup(const char * str) { return _strdup(str); }
 
 #else // !_WIN32
@@ -72,7 +72,7 @@ int sysstd_spawn(const char * cmd, const char * const * argv) {
   pid_t pid = fork();
   if (pid < 0) return pid;
   if (pid == 0) {
-    execv(cmd, (char * const *)argv);
+    execvp(cmd, (char * const *)argv);
     exit(1);
   } else {
     int res;
