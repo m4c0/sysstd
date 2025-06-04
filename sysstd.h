@@ -13,6 +13,7 @@
 int         sysstd_chdir(const char * path);
 char *      sysstd_env(const char * name);
 FILE *      sysstd_fopen(const char * name, const char * mode);
+void        sysstd_fullpath(const char * path, char * dst, unsigned dst_len);
 struct tm * sysstd_gmtime(const time_t * t);
 int         sysstd_mkdir(const char * path);
 int         sysstd_remove(const char * path);
@@ -40,6 +41,9 @@ FILE * sysstd_fopen(const char * name, const char * mode) {
   FILE * res;
   return (0 == fopen_s(&res, name, mode)) ? res : NULL;
 }
+void sysstd_fullpath(const char * path, char * dst, unsigned dst_size) {
+  _fullpath(dst, path, dst_size);
+}
 struct tm * sysstd_gmtime(const time_t * t) {
   static struct tm tm;
   return (0 == gmtime_s(&tm, t)) ? &tm : NULL;
@@ -64,6 +68,10 @@ char * sysstd_env(const char * name) {
   return e ? strdup(e) : NULL;
 }
 FILE * sysstd_fopen(const char * name, const char * mode) { return fopen(name, mode); }
+void sysstd_fullpath(const char * path, char * dst, unsigned dst_size) {
+  // TODO: assert dst_size >= PATH_MAX
+  realpath(path, dst);
+}
 struct tm * sysstd_gmtime(const time_t * t) { return gmtime(t); }
 int sysstd_mkdir(const char * path) { return mkdir(path, 0777); }
 int sysstd_remove(const char * path) { return remove(path); }
