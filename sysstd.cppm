@@ -11,7 +11,6 @@ export namespace sysstd {
   constexpr const auto fullpath = sysstd_fullpath;
   constexpr const auto gmtime   = sysstd_gmtime;
   constexpr const auto mkdir    = sysstd_mkdir;
-  constexpr const auto remove   = sysstd_remove;
   constexpr const auto setenv   = sysstd_setenv;
   constexpr const auto spawn    = sysstd_spawn;
   constexpr const auto strdup   = sysstd_strdup;

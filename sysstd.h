@@ -16,7 +16,6 @@ FILE *      sysstd_fopen(const char * name, const char * mode);
 void        sysstd_fullpath(const char * path, char * dst, unsigned dst_len);
 struct tm * sysstd_gmtime(const time_t * t);
 int         sysstd_mkdir(const char * path);
-int         sysstd_remove(const char * path);
 void        sysstd_setenv(const char * name, const char * value);
 int         sysstd_spawn(const char * cmd, const char * const * argv);
 char *      sysstd_strdup(const char * str);
@@ -49,7 +48,6 @@ struct tm * sysstd_gmtime(const time_t * t) {
   return (0 == gmtime_s(&tm, t)) ? &tm : NULL;
 }
 int sysstd_mkdir(const char * path) { return _mkdir(path); }
-int sysstd_remove(const char * path) { return remove(path); }
 void sysstd_setenv(const char * name, const char * value) {
   SetEnvironmentVariable(name, value);
 }
@@ -74,7 +72,6 @@ void sysstd_fullpath(const char * path, char * dst, unsigned dst_size) {
 }
 struct tm * sysstd_gmtime(const time_t * t) { return gmtime(t); }
 int sysstd_mkdir(const char * path) { return mkdir(path, 0777); }
-int sysstd_remove(const char * path) { return remove(path); }
 void sysstd_setenv(const char * name, const char * value) { setenv(name, value, 0); }
 int sysstd_spawn(const char * cmd, const char * const * argv) {
   pid_t pid = fork();
