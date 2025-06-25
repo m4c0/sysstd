@@ -10,15 +10,16 @@
 #define SYSSTD_FILE_SEP "/"
 #endif
 
-int         sysstd_chdir(const char * path);
-char *      sysstd_env(const char * name);
-FILE *      sysstd_fopen(const char * name, const char * mode);
-void        sysstd_fullpath(const char * path, char * dst, unsigned dst_len);
-struct tm * sysstd_gmtime(const time_t * t);
-int         sysstd_mkdir(const char * path);
-void        sysstd_setenv(const char * name, const char * value);
-int         sysstd_spawn(const char * cmd, const char * const * argv);
-char *      sysstd_strdup(const char * str);
+int          sysstd_chdir(const char * path);
+char *       sysstd_env(const char * name);
+FILE *       sysstd_fopen(const char * name, const char * mode);
+void         sysstd_fullpath(const char * path, char * dst, unsigned dst_len);
+struct tm *  sysstd_gmtime(const time_t * t);
+const char * sysstd_link(const char * src, const char * dst);
+int          sysstd_mkdir(const char * path);
+void         sysstd_setenv(const char * name, const char * value);
+int          sysstd_spawn(const char * cmd, const char * const * argv);
+char *       sysstd_strdup(const char * str);
 
 #ifdef SYSSTD_IMPLEMENTATION
 
@@ -47,6 +48,13 @@ struct tm * sysstd_gmtime(const time_t * t) {
   static struct tm tm;
   return (0 == gmtime_s(&tm, t)) ? &tm : NULL;
 }
+const char * sysstd_link(const char * src, const char * dst) {
+  if (CreateHardLink(dst, src, nullptr)) return NULL;
+
+  static char buf[1024];
+  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), LOCALE_USER_DEFAULT, buf, sizeof(buf), NULL);
+  return buf;
+}
 int sysstd_mkdir(const char * path) { return _mkdir(path); }
 void sysstd_setenv(const char * name, const char * value) {
   SetEnvironmentVariable(name, value);
@@ -55,10 +63,15 @@ int sysstd_spawn(const char * cmd, const char * const * argv) { return _spawnvp(
 char * sysstd_strdup(const char * str) { return _strdup(str); }
 
 #else // !_WIN32
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#ifdef __APPLE__
+#include <sys/clonefile.h>
+#endif
 
 int sysstd_chdir(const char * path) { return chdir(path); }
 char * sysstd_env(const char * name) {
@@ -71,6 +84,14 @@ void sysstd_fullpath(const char * path, char * dst, unsigned dst_size) {
   realpath(path, dst);
 }
 struct tm * sysstd_gmtime(const time_t * t) { return gmtime(t); }
+const char * sysstd_link(const char * src, const char * dst) {
+#ifdef __APPLE__
+  if (0 == clonefile(src, dst, 0)) return NULL;
+#else
+  if (link(src, dst) == 0) return NULL;
+#endif
+  return strerror(errno);
+}
 int sysstd_mkdir(const char * path) { return mkdir(path, 0777); }
 void sysstd_setenv(const char * name, const char * value) { setenv(name, value, 0); }
 int sysstd_spawn(const char * cmd, const char * const * argv) {

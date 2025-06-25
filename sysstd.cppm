@@ -10,6 +10,7 @@ export namespace sysstd {
   constexpr const auto fopen    = sysstd_fopen;
   constexpr const auto fullpath = sysstd_fullpath;
   constexpr const auto gmtime   = sysstd_gmtime;
+  constexpr const auto link     = sysstd_link;
   constexpr const auto mkdir    = sysstd_mkdir;
   constexpr const auto setenv   = sysstd_setenv;
   constexpr const auto spawn    = sysstd_spawn;
