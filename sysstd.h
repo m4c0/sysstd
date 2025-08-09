@@ -49,7 +49,7 @@ struct tm * sysstd_gmtime(const time_t * t) {
   return (0 == gmtime_s(&tm, t)) ? &tm : NULL;
 }
 const char * sysstd_link(const char * src, const char * dst) {
-  if (CreateHardLink(dst, src, nullptr)) return NULL;
+  if (CreateHardLink(dst, src, NULL)) return NULL;
 
   static char buf[1024];
   FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), LOCALE_USER_DEFAULT, buf, sizeof(buf), NULL);
