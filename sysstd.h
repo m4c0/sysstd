@@ -21,6 +21,8 @@ void         sysstd_setenv(const char * name, const char * value);
 int          sysstd_spawn(const char * cmd, const char * const * argv);
 char *       sysstd_strdup(const char * str);
 
+#endif // SYSSTD_H
+
 #ifdef SYSSTD_IMPLEMENTATION
 
 #ifdef _WIN32
@@ -112,4 +114,3 @@ char * sysstd_strdup(const char * str) { return strdup(str); }
 #endif
  
 #endif // SYSSTD_IMPLEMENTATION
-#endif // SYSSTD_H
